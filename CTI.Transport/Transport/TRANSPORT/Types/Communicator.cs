@@ -23,7 +23,9 @@ namespace CompiledTechnologies.Transport
         public const int CMD_SEND_FILE = 1;
         public const int CMD_IS_EXIT_FILE = 100;
         public const int CMD_CHK_DIR = 101;
-        public const int BUF_SIZE = 512;
+        public const int CMD_DATA_SIZE = 10;
+        public const int CMD_DATA = 11;
+        public const int BUF_SIZE = (64 << 10);
         public static readonly char[] password = { 'P', 'A', 'S', 'S', 'W', 'O', 'D' };
         #endregion
 
@@ -227,6 +229,7 @@ namespace CompiledTechnologies.Transport
                 SendAction(pSize, pSize.Length);
                 byte[] pBuffer = new byte[BUF_SIZE];
                 Int32 nBytesToSend = nFileSize;
+                int offset = 0;
                 while (nBytesToSend > 0)
                 {
                     int nReadByte = fsSource.Read(pBuffer, 0, BUF_SIZE);
@@ -235,11 +238,11 @@ namespace CompiledTechnologies.Transport
                         theState = CommunicatorState.Open;
                         return false;
                     }
-                    WaitActionComplete.WaitOne();
-                    encryptData(pBuffer);
+                    //WaitActionComplete.WaitOne();
+                    offset = encryptData(pBuffer, offset);
                     SendAction(pBuffer, nReadByte);
                     nBytesToSend -= nReadByte;
-                    ReceiveWaitAction();
+                    //ReceiveWaitAction();
                 }
                 theState = CommunicatorState.Open;
                 return true;
@@ -269,6 +272,7 @@ namespace CompiledTechnologies.Transport
                 SendAction(pSize, pSize.Length);
                 byte[] pBuffer = new byte[BUF_SIZE];
                 Int32 nBytesToSend = nFileSize;
+                int offset = 0;
                 while (nBytesToSend > 0)
                 {
                     int nReadByte = sSource.Read(pBuffer, 0, BUF_SIZE);
@@ -277,11 +281,11 @@ namespace CompiledTechnologies.Transport
                         theState = CommunicatorState.Open;
                         return true;
                     }
-                    WaitActionComplete.WaitOne();
-                    encryptData(pBuffer);
+                    //WaitActionComplete.WaitOne();
+                    offset = encryptData(pBuffer, offset);
                     SendAction(pBuffer, nReadByte);
                     nBytesToSend -= nReadByte;
-                    ReceiveWaitAction();
+                    //ReceiveWaitAction();
                 }
                 theState = CommunicatorState.Open;
                 return true;
@@ -292,12 +296,16 @@ namespace CompiledTechnologies.Transport
         #endregion
 
         #region **************************** Private Methods ******************************
-        private void encryptData(byte[] data)
+        private int encryptData(byte[] data, int offset)
         {
             for (int i = 0; i < data.Length; i++)
             {
-                data[i] = (byte)(data[i] ^ password[i % password.Length]);
+                // data[i] = (byte)(data[i] ^ password[i % password.Length]);
+                data[i] = (byte)(data[i] ^ password[offset]);
+                offset++;
+                if (offset >= password.Length) offset = 0;
             }
+            return offset;
         }
         private void SendAction(byte[] arData, int nCount)
         {
