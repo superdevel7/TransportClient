@@ -273,20 +273,19 @@ namespace CompiledTechnologies.Transport
                 byte[] pBuffer = new byte[BUF_SIZE];
                 Int32 nBytesToSend = nFileSize;
                 int offset = 0;
+                WaitActionComplete.WaitOne();
                 while (nBytesToSend > 0)
                 {
                     int nReadByte = sSource.Read(pBuffer, 0, BUF_SIZE);
                     if (nReadByte == 0)
                     {
-                        theState = CommunicatorState.Open;
-                        return true;
+                        break;
                     }
-                    //WaitActionComplete.WaitOne();
                     offset = encryptData(pBuffer, offset);
                     SendAction(pBuffer, nReadByte);
                     nBytesToSend -= nReadByte;
-                    //ReceiveWaitAction();
                 }
+                ReceiveWaitAction();
                 theState = CommunicatorState.Open;
                 return true;
             }
