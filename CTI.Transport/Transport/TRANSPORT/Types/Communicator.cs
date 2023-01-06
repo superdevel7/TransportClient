@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Net.Sockets;
 using System.Threading;
+using System.Diagnostics;
 #endregion
 
 namespace CompiledTechnologies.Transport
@@ -25,6 +26,7 @@ namespace CompiledTechnologies.Transport
         public const int CMD_CHK_DIR = 101;
         public const int CMD_DATA_SIZE = 10;
         public const int CMD_DATA = 11;
+        public const int CMD_CONN_TEST = 80;
         public const int BUF_SIZE = (64 << 10);
         public static readonly char[] password = { 'P', 'A', 'S', 'S', 'W', 'O', 'D' };
         #endregion
@@ -292,6 +294,21 @@ namespace CompiledTechnologies.Transport
             }
             theState = CommunicatorState.Open;
             return false;
+        }
+        public void TestConnection()
+        {
+            theState = CommunicatorState.Busy;
+            Command sCommand;
+            sCommand.nCommand = CMD_CONN_TEST;
+            sCommand.UNCPath = "TEST";
+            int nSize = Marshal.SizeOf(sCommand);
+            byte[] arStruct = new byte[nSize];
+            IntPtr pData = Marshal.AllocHGlobal(nSize);
+            Marshal.StructureToPtr(sCommand, pData, true);
+            Marshal.Copy(pData, arStruct, 0, nSize);
+            Marshal.FreeHGlobal(pData);
+            SendAction(arStruct, nSize);
+            theState = CommunicatorState.Open;
         }
         #endregion
 

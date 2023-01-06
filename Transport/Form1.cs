@@ -45,7 +45,7 @@ namespace Transport
             using (MemoryStream ms = new MemoryStream())
             {
                 xmldoc.Save(ms);
-                Transporter.Comm[0].SendFile(@"c:\apps\test\AT.xml", ms);
+                Transporter.SendFile(@"c:\apps\test\AT.xml", ms);
             }
             watch.Stop();
             lb.Items.Add("File A: " + watch.Elapsed.ToString(@"m\:ss\.fff"));
@@ -57,7 +57,7 @@ namespace Transport
             using (MemoryStream ms = new MemoryStream())
             {
                 xmldoc.Save(ms);
-                Transporter.Comm[0].SendFile(@"c:\apps\test\BT.xml", ms);
+                Transporter.SendFile(@"c:\apps\test\BT.xml", ms);
             }
             watch.Stop();
             lb.Items.Add("File B: " + watch.Elapsed.ToString(@"m\:ss\.fff"));
@@ -69,7 +69,7 @@ namespace Transport
             using (MemoryStream ms = new MemoryStream())
             {
                 xmldoc.Save(ms);
-                Transporter.Comm[0].SendFile(@"c:\apps\test\CT.xml", ms);
+                Transporter.SendFile(@"c:\apps\test\CT.xml", ms);
             }
             watch.Stop();
             lb.Items.Add("File C: " + watch.Elapsed.ToString(@"m\:ss\.fff"));
@@ -81,7 +81,7 @@ namespace Transport
             using (MemoryStream ms = new MemoryStream())
             {
                 xmldoc.Save(ms);
-                Transporter.Comm[0].SendFile(@"c:\apps\test\DT.xml", ms);
+                Transporter.SendFile(@"c:\apps\test\DT.xml", ms);
             }
             watch.Stop();
             lb.Items.Add("File D: " + watch.Elapsed.ToString(@"m\:ss\.fff"));
@@ -93,7 +93,7 @@ namespace Transport
             using (MemoryStream ms = new MemoryStream())
             {
                 xmldoc.Save(ms);
-                Transporter.Comm[0].SendFile(@"c:\apps\test\ET.xml", ms);
+                Transporter.SendFile(@"c:\apps\test\ET.xml", ms);
             }
             watch.Stop();
             lb.Items.Add("File E: " + watch.Elapsed.ToString(@"m\:ss\.fff"));

@@ -27,8 +27,9 @@ namespace Transport
             args[0] = "192.168.1.123";
             args[1] = "7030";
             Transporter.OpenTransport(args);
-            Application.Run(new Form1());
+            Transporter.TestConnection();
             Transporter.CloseTransport();
+            Application.Run(new Form1());
         }
     }
 }

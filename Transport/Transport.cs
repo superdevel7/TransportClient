@@ -1,7 +1,9 @@
 ﻿#region .NET Base Class Namespace Imports
 using System;
+using System.IO;
 using System.Windows.Forms;
 using System.Globalization;
+using System.Diagnostics;
 #endregion
 
 #region CompiledTechnologies Assemblies
@@ -62,6 +64,58 @@ namespace CompiledTechnologies.Network
         public static void CloseTransport()
         {
             CloseCommunicators();
+        }
+        public static int OpenOneCommunicator(int id)
+        {
+            if (id < 0 || id >= _comm.Length) return 0;
+            _comm[id].Open(_server, _port);
+            if (!_comm[id].IsOpen)
+            {
+                ServerUnavailable();
+                return 0;
+            }
+            return 1;
+        }
+        public static void CloseOneCommunicator(int id)
+        {
+            if (id < 0 || id >= _comm.Length) return;
+            if (_comm[id].IsOpen)
+            {
+                _comm[id].Close();
+            }
+        }
+        public static bool SendFile(string strRemoteFile, Stream sSource)
+        {
+            Trace.WriteLine("Send file start");
+            Communicator new_comm = new Communicator();
+            new_comm.Open(_server, _port);
+            Trace.WriteLine("1. IsOpen = " + new_comm.IsOpen);
+            if (!new_comm.IsOpen)
+            {
+                ServerUnavailable();
+                new_comm = null;
+                GC.Collect();
+                return false;
+            }
+            bool res = new_comm.SendFile(strRemoteFile, sSource);
+            if (new_comm.IsOpen)
+            {
+                new_comm.Close();
+            }
+            Trace.WriteLine("2. IsOpen = " + new_comm.IsOpen);
+            new_comm = null;
+            GC.Collect();
+            return res;
+        }
+        public static void TestConnection()
+        {
+            for (var i = 0; i < _comm.Length; i++)
+            {
+                if (_comm[i].IsOpen)
+                {
+                    _comm[i].TestConnection();
+                }
+            }
         }
         #endregion
 
