@@ -25,7 +25,7 @@ namespace CompiledTechnologies.Transport
         public const int CMD_CHK_DIR = 101;
         public const int CMD_DATA_SIZE = 10;
         public const int CMD_DATA = 11;
-        public const int BUF_SIZE = (64 << 10);
+        public const int BUF_SIZE = (8 << 10);
         public static readonly char[] password = { 'P', 'A', 'S', 'S', 'W', 'O', 'D' };
         #endregion
 
